@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home Lighting Control</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            text-align: center;
+            margin: 0;
+            padding: 40px;
+            color: #172033;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 35px;
+        }
+
+        .room {
+            background-color: white;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 25px;
+            border: 1px solid #dfe3e8;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room h2 {
+            margin: 0 0 5px;
+        }
+
+        .room p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 7px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .on-button {
+            border: 1px solid #7bbf7b;
+            color: #287a28;
+        }
+
+        .on-button:hover {
+            background-color: #eaf7ea;
+        }
+
+        .off-button {
+            border: 1px solid #d88a8a;
+            color: #a83232;
+        }
+
+        .off-button:hover {
+            background-color: #fff0f0;
+        }
+
+        #status {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #dfe3e8;
+            border-radius: 8px;
+            color: #64748b;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <h1>Home Lighting Control</h1>
+
+    <p class="subtitle">
+        Control the lights remotely using the web interface
+    </p>
+
+
+    <!-- Living Room -->
+
+    <div class="room">
+
+        <div>
+            <h2>Living Room</h2>
+            <p>Control the living room light</p>
+        </div>
+
+        <div class="buttons">
+
+            <button class="on-button" onclick="controlLight('livingroom', 'Living Room', 'ON')">
+                ON
+            </button>
+
+            <button class="off-button" onclick="controlLight('livingroom', 'Living Room', 'OFF')">
+                OFF
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Bathroom -->
+
+    <div class="room">
+
+        <div>
+            <h2>Bathroom</h2>
+            <p>Control the bathroom light</p>
+        </div>
+
+        <div class="buttons">
+
+            <button class="on-button" onclick="controlLight('bathroom', 'Bathroom', 'ON')">
+                ON
+            </button>
+
+            <button class="off-button" onclick="controlLight('bathroom', 'Bathroom', 'OFF')">
+                OFF
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Closet -->
+
+    <div class="room">
+
+        <div>
+            <h2>Closet</h2>
+            <p>Control the closet light</p>
+        </div>
+
+        <div class="buttons">
+
+            <button class="on-button" onclick="controlLight('closet', 'Closet', 'ON')">
+                ON
+            </button>
+
+            <button class="off-button" onclick="controlLight('closet', 'Closet', 'OFF')">
+                OFF
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <p id="status">
+        System ready
+    </p>
+
+
+    <script>
+
+        // Send the selected room and LED state to server.js.
+        async function controlLight(room, roomName, state) {
+
+            // Show the current command on the webpage.
+            document.getElementById("status").innerText =
+                `Sending ${state} command to ${roomName}...`;
+
+            try {
+
+                // Send the room and state to the Node.js server.
+                const response = await fetch(
+                    `/toggle?room=${room}&state=${state}`
+                );
+
+                // Read the Arduino response.
+                const message = await response.text();
+
+                // Display the result.
+                document.getElementById("status").innerText =
+                    `${roomName}: ${state}`;
+
+            }
+
+            catch (error) {
+
+                // Display an error if communication fails.
+                document.getElementById("status").innerText =
+                    "Unable to send command";
+
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
